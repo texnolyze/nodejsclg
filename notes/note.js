@@ -1,4 +1,4 @@
-const readline = require("readline"); // импортируем модуль из node
+const readline = requier("readline"); // импортируем модуль из node
 const helper = requier("./utils/helper");
 
 const rl = readline.createInterface({
