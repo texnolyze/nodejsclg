@@ -7,20 +7,53 @@ const readline = require("readline").promice; // импортируем моду
 const helper = require("./utils/helper"); // импортируем свои модули 
 const Decorator = require("./utils/decorator");
 const fileManager = require("./utils/fileManager");
+
 // инициализация ввода вывода
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout
 });
+
 // переменные
 const NAME_PROJ = '"NOTE"-"BOOK"';
 let notes = fileManager.loadFile();
 let welcome = `Тебя приветствует приложение ${NAME_PROJ}`;
 
+// =============================
+// ДОБАВЛЕННАЯ ФУНКЦИЯ (вспомогательная)
+// =============================
 const question = (query) => {
   return new Promice((resolve) => {
     rl.question(question, resolve);
   });
+};
+
+// =============================
+// ДОБАВЛЕННАЯ ФУНКЦИЯ (приветствие пользователя)
+// =============================
+const greetUser = async() => {
+  const name = await question("Введите ваше имя  ");
+  console.log(`Привет, ${name}! Добро пожаловать!`);
+};
+
+// =============================
+// ДОБАВЛЕННАЯ ФУНКЦИЯ (поиск заметок)
+// =============================
+const findNote = async() => {
+  const keyword = await question("Введите слово для поиска  ");
+
+  const results = fileManager.findNotes(notes, keyword);
+
+  Decorator.showSearchResults(results);
+
+  await showMenu();
+};
+
+// =============================
+// ДОБАВЛЕННАЯ ФУНКЦИЯ (расширенное меню)
+// =============================
+const extendedMenu = () => {
+  console.log("5. Поиск заметки");
 };
 
 //=============================
@@ -30,8 +63,13 @@ const question = (query) => {
 //приветствие
 const welcomeApp = async() => {
   Decorator.presentWelcome(welcome);
+
+  // ДОБАВЛЕНО
+  await greetUser();
+
   await showMenu();
 };
+
 //добавление заметки
 const addNote = async() => {
   const title = question("Введите заголовок  ");
@@ -49,15 +87,20 @@ const addNote = async() => {
 
       await showMenu();
 }; 
+
 //просмотр всех заметок
 const showNotes = async() => {
   Decorator.showFormatAllNotes(notes);
   await showMenu();
 };
+
 //меню программы
 const showMenu = async() => {
   helper.statsNotes(notes);
   Decorator.presentMenu();
+
+  // ДОБАВЛЕНО
+  extendedMenu();
 
   const choice = question("Выберите пункт от 1 до 4  ");
   try{
@@ -75,6 +118,12 @@ const showMenu = async() => {
         console.log("Завершение работы!")
         rl.close();
         break;
+
+      // ДОБАВЛЕНО
+      case '5':
+        await findNote();
+        break;
+
       default:
         console.log("Нет такого пункта!");
         await showMenu();
@@ -86,6 +135,7 @@ const showMenu = async() => {
   }
   
 };
+
 //удаление заметки
 const deleteNote = async() => {
   if(notes.length === 0){
@@ -115,5 +165,6 @@ const deleteNote = async() => {
  
   await showMenu();
 };
+
 //запуск программы
 await welcomeApp();
