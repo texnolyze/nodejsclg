@@ -12,7 +12,6 @@ class Decorator{
     else{
       console.log("~".repeat(num));
     }
-    
   }
 
   static presentWelcome(welcome){
@@ -32,22 +31,49 @@ class Decorator{
     console.log("4. Выход");
     this.drawLine(50);
   }
-// ┌ ─ ┐ │ └ ┘ ├ ┤ ┬ ┴ ┼
+
+  // ┌ ─ ┐ │ └ ┘ ├ ┤ ┬ ┴ ┼
   static showFormatNote(note){
-      this.drawLine(50);
-      console.log(" ┌" + "─".repeat(50));
-      console.log(` │ ${note.id} * ${note.date}`);
-      console.log(` │ ${note.title}`);
-      console.log(` │ ${note.content}`);
-      console.log(" └" + "─".repeat(50));
-      this.drawLine(50);
+    this.drawLine(50);
+    console.log(" ┌" + "─".repeat(50));
+    console.log(` │ ${note.id} * ${note.date}`);
+    console.log(` │ ${note.title}`);
+    console.log(` │ ${note.content}`);
+    console.log(" └" + "─".repeat(50));
+    this.drawLine(50);
   }
 
   static showFormatAllNotes(notes){
     console.log("----Все ваши заметки----");
     notes.forEach((note) => {
       this.showFormatNote(note);
-  });
+    });
+  }
+
+  //  НОВЫЕ МЕТОДЫ 
+  static showError(message){
+    this.drawLine(50, 3);
+    console.log(`Ошибка: ${message}`);
+    this.drawLine(50, 3);
+  }
+
+  static showSuccess(message){
+    this.drawLine(50, 1);
+    console.log(`✔ ${message}`);
+    this.drawLine(50, 1);
+  }
+
+  static showSearchResults(results){
+    this.drawLine(50, 2);
+    console.log("Результаты поиска:");
+    this.drawLine(50, 2);
+
+    if(results.length === 0){
+      console.log("Ничего не найдено");
+    } else {
+      results.forEach(note => this.showFormatNote(note));
+    }
   }
 }
+
 module.exports = Decorator;
