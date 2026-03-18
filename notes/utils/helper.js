@@ -6,5 +6,14 @@ const reindexId = (notes) => {
 const statsNotes = (notes) => {
   console.log(`Всего заметок ${notes.length}`);
 };
+// проверка на пустой ввод
+const isEmptyInput = (input) => {
+  return !input || input.trim() === "";
+};
 
-module.exports = {reindexId, statsNotes};
+// форматирование текста
+const toUpper = (text) => {
+  return text.toUpperCase();
+};
+
+module.exports = { reindexId, statsNotes, isEmptyInput, toUpper };
