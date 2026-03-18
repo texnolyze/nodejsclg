@@ -1,103 +1,119 @@
-const readline = requier("readline"); // Импортируем модуль из node
-const helper = requier("./utils/helper");
+//=============================
+// Осеовной скрипт приложения
+//=============================
 
+// импорты
+const readline = require("readline").promice; // импортируем модуль из node
+const helper = require("./utils/helper"); // импортируем свои модули 
+const Decorator = require("./utils/decorator");
+const fileManager = require("./utils/fileManager");
+// инициализация ввода вывода
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout
 });
-
+// переменные
 const NAME_PROJ = '"NOTE"-"BOOK"';
-
-let notes = [];
-
+let notes = fileManager.loadFile();
 let welcome = `Тебя приветствует приложение ${NAME_PROJ}`;
 
-const welcomeApp = () => {
-  console.log('_'.repeat(30));
-  console.log('\n');
-  console.log(`${welcome}`);
-  console.log('_'.repeat(30));
-  showMenu();
+const question = (query) => {
+  return new Promice((resolve) => {
+    rl.question(question, resolve);
+  });
 };
 
-const addNote = () => {
-  rl.question("Введите заголовок", (title) => {
-    rl.question("Напишите текст заметки", (content) => {
-      const newNote = {
-        id: helper.reindexId(notes),
+//=============================
+// Функции
+//=============================
+
+//приветствие
+const welcomeApp = async() => {
+  Decorator.presentWelcome(welcome);
+  await showMenu();
+};
+//добавление заметки
+const addNote = async() => {
+  const title = question("Введите заголовок  ");
+  const content = question("Напишите текст заметки  ");
+  
+  const newNote = {
+        id: notes.length + 1,
         title: title,
         content: content,
         date: new Date().toLocaleString()
       };
       notes.push(newNote);
+      fileManager.saveFile(notes);
       console.log(`Заметка ${newNote.title} сохранена!`);
-      console.log(`Всего заметок ${notes.length}`);
 
-      showMenu();
-    });
-  });
+      await showMenu();
 }; 
-
-const showNotes = () => {
-  console.log("----Все ваши заметки----");
-  notes.forEach((note) => {
-    console.log("-".repeat(30));
-    console.log(`${note.id} * ${note.date}`);
-    console.log(`${note.title}`);
-    console.log(`${note.content}`);
-    console.log("-".repeat(30));
-  });
-  showMenu();
+//просмотр всех заметок
+const showNotes = async() => {
+  Decorator.showFormatAllNotes(notes);
+  await showMenu();
 };
+//меню программы
+const showMenu = async() => {
+  helper.statsNotes(notes);
+  Decorator.presentMenu();
 
-const showMenu = () => {
-  console.log(`Всего заметок ${notes.length}`);
-  console.log("Главное меню");
-  console.log("1. Добавить заметку");
-  console.log("2. Посмотреть заметки");
-  console.log("3. Удаление заметки");
-
-  rl.question("Выберите пункт от 1 до 2", (choice) => {
+  const choice = question("Выберите пункт от 1 до 4  ");
+  try{
     switch(choice){
       case '1':
-        addNote();
+         await addNote();
         break;
       case '2':
-        showNotes();
+        await showNotes();
         break;
       case '3':
-        deleteNote();
+        await deleteNote();
+        break;
+      case '4':
+        console.log("Завершение работы!")
+        rl.close();
         break;
       default:
         console.log("Нет такого пункта!");
-        showMenu();
-    };
-  });
+        await showMenu();
+     }
+  }
+  catch(e){
+    console.log("Ошибка! Закрытие приложения!");
+    rl.close();
+  }
+  
 };
-
-const deleteNote = () => {
+//удаление заметки
+const deleteNote = async() => {
   if(notes.length === 0){
     console.log("У вас пока нет заметок!");
   }
   notes.forEach((note) => {
     console.log(`\n * [${note.id}] * ${note.title} *`);
   });
-  rl.question("Введите номер заметки для удаления или 0 для отмены", (choice) =>{
-    let num = parseInt(choice);
-    if(num === 0){
-      showMenu();
-    }
-    else if(num > 0 && num <= notes.length){
+  
+  const choice = question("Введите номер заметки для удаления или 0 для отмены  ");
+  
+  let num = parseInt(choice);
+  
+  if(num === 0){
+      await showMenu();
+  }
+  else if(num > 0 && num <= notes.length){
       notes.splice(num - 1, 1);
+      notes = helper.reindexId(notes);
+      fileManager.saveFile(notes);
       console.log(`Заметка удалена!`);
-    }
-    else{
+  }
+  else{
       console.log("Нет подходящей заметки!");
-      showMenu();
-    }
-    showMenu();
-  });
-  showMenu();
+      await showMenu();
+  }
+ 
+  await showMenu();
 };
-
-welcomeApp();
+//запуск программы
+await welcomeApp();
