@@ -3,7 +3,7 @@
 //=============================
 
 // импорты
-const readline = require("readline").promises; // импортируем модуль из node
+const readline = require("readline"); // импортируем модуль из node
 const helper = require("./utils/helper"); // импортируем свои модули 
 const Decorator = require("./utils/decorator");
 const fileManager = require("./utils/fileManager");
@@ -23,8 +23,8 @@ let welcome = `Тебя приветствует приложение ${NAME_PRO
 // ДОБАВЛЕННАЯ ФУНКЦИЯ (вспомогательная)
 // =============================
 const question = (query) => {
-  return new Promice((resolve) => {
-    rl.question(question, resolve);
+  return new Promise((resolve) => {
+    rl.question(query, resolve);
   });
 };
 
@@ -72,8 +72,8 @@ const welcomeApp = async() => {
 
 //добавление заметки
 const addNote = async() => {
-  const title = question("Введите заголовок  ");
-  const content = question("Напишите текст заметки  ");
+  const title = await question("Введите заголовок  ");
+  const content = await question("Напишите текст заметки  ");
   
   const newNote = {
         id: notes.length + 1,
@@ -102,7 +102,7 @@ const showMenu = async() => {
   // ДОБАВЛЕНО
   extendedMenu();
 
-  const choice = question("Выберите пункт от 1 до 4  ");
+  const choice = await question("Выберите пункт от 1 до 4  ");
   try{
     switch(choice){
       case '1':
