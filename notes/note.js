@@ -3,7 +3,7 @@
 //=============================
 
 // импорты
-const readline = require("readline").promice; // импортируем модуль из node
+const readline = require("readline").promises; // импортируем модуль из node
 const helper = require("./utils/helper"); // импортируем свои модули 
 const Decorator = require("./utils/decorator");
 const fileManager = require("./utils/fileManager");
@@ -167,4 +167,4 @@ const deleteNote = async() => {
 };
 
 //запуск программы
-await welcomeApp();
+welcomeApp();
