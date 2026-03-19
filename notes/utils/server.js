@@ -12,5 +12,5 @@ const server = http.createServer(async (req, res) => {
 });
 
 server.listen(3000, () => {
-  console.log("Сервер запущен на порту 3000");
+  console.log("Сервер запущен на порту http://localhost:3000");
 });
